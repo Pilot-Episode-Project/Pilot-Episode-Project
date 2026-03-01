@@ -1,0 +1,94 @@
+import { useState, useRef } from "react";
+
+const MAX_DESC = 280;
+
+export default function SectionBasics({ title, setTitle, desc, setDesc, previews, setPreviews }) {
+  const fileRef = useRef();
+  const [dragging, setDragging] = useState(false);
+
+  const handleFiles = (files) => {
+    const urls = Array.from(files)
+      .filter(f => f.type.startsWith("image/"))
+      .slice(0, 4 - previews.length)
+      .map(f => URL.createObjectURL(f));
+    setPreviews(prev => [...prev, ...urls].slice(0, 4));
+  };
+
+  const removePreview = (i) => setPreviews(prev => prev.filter((_, idx) => idx !== i));
+
+  return (
+    <div className="form-section">
+      <div className="section-header">
+        <div className="section-num">1</div>
+        <div>
+          <div className="section-title">Project Basics</div>
+          <div className="section-sub">Give your project a name, description and cover images</div>
+        </div>
+      </div>
+
+      <div className="field">
+        <label className="field-label">Project Name</label>
+        <input
+          className="field-input"
+          type="text"
+          placeholder="e.g. Adaptive Learning Engine"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          maxLength={80}
+        />
+      </div>
+
+      <div className="field">
+        <label className="field-label">Description</label>
+        <textarea
+          className="field-textarea"
+          placeholder="Describe what your project does, what problem it solves, and who it's for…"
+          value={desc}
+          onChange={e => setDesc(e.target.value.slice(0, MAX_DESC))}
+        />
+        <div className={`char-count${desc.length > MAX_DESC * 0.9 ? " warn" : ""}`}>
+          {desc.length} / {MAX_DESC}
+        </div>
+      </div>
+
+      <div className="field">
+        <label className="field-label">Project Images</label>
+        {previews.length < 4 && (
+          <div
+            className={`upload-zone${dragging ? " dragging" : ""}`}
+            onClick={() => fileRef.current?.click()}
+            onDragOver={e => { e.preventDefault(); setDragging(true); }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={e => { e.preventDefault(); setDragging(false); handleFiles(e.dataTransfer.files); }}
+          >
+            <div className="upload-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div className="upload-label">
+              {dragging ? "Drop images here" : "Click to upload or drag & drop"}
+            </div>
+            <div className="upload-sub">PNG, JPG, WEBP — up to {4 - previews.length} image{4 - previews.length !== 1 ? "s" : ""}</div>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              multiple
+              style={{ display: "none" }}
+              onChange={e => handleFiles(e.target.files)}
+            />
+          </div>
+        )}
+        {previews.length > 0 && (
+          <div className="upload-previews">
+            {previews.map((src, i) => (
+              <div key={i} className="upload-preview">
+                <img src={src} alt="" />
+                <button className="preview-remove" onClick={() => removePreview(i)}>×</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
