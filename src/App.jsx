@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Layout from "./Layout";
+import Layout from "./components/Layout";
 import ProjectsList from "./pages/ProjectsList";
 import ProjectSpecifics from "./pages/ProjectSpecifics";
 import Write from "./pages/Write";
@@ -14,6 +14,7 @@ export default function App() {
           <Route path="/" element={<ProjectsList />} />
           <Route path="project/:id" element={<ProjectSpecifics />} />
           <Route path="new" element={<Write />} />
+          <Route path="profile/me" element={<ProfilePage />} />
           <Route path="profile/:id" element={<ProfilePage />} />
         </Route>
       </Routes>
