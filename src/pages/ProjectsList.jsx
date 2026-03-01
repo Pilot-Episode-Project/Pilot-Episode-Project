@@ -1,24 +1,76 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProjectCard from "../components/ProjectsListComponents/ProjectCard";
-import { useProjects } from "../hooks/useProjects";
 import { style, TAG_FILTERS } from "../components/ProjectsListComponents/styles";
+import { supabase } from "../supabaseClient";
 
 export default function ProjectsList() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
-  const { projects, loading, error } = useProjects();
+  
+  // 💡 가짜 useProjects 대신 진짜 DB 상태 관리
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('projects')
+          .select(`
+            *,
+            profiles ( id, school_email ),
+            project_roles ( id, role_name, is_closed )
+          `)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const mappedProjects = (data || []).map(p => {
+          const authorEmail = p.profiles?.school_email || '익명 유저';
+          const authorName = authorEmail.split('@')[0];
+          const stackArray = p.tech_stacks 
+            ? p.tech_stacks.split(',').map(t => ({ name: t.trim() })) 
+            : [];
+
+          return {
+            id: p.id,
+            title: p.title,
+            description: p.content,
+            tags: [p.category_tag],
+            images: p.images || [],
+            stack: stackArray,
+            lead: authorName,
+            contributors: [ { initials: authorName.charAt(0).toUpperCase(), color: '#E14141' } ],
+            created_at: p.created_at
+          };
+        });
+
+        setProjects(mappedProjects);
+      } catch (err) {
+        console.error("데이터 불러오기 실패:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  // 🚨 검색 필터링 후 무조건 '최신순'으로 강제 정렬
   const filtered = projects.filter(p => {
     const tagMatch = activeFilter === "All" || p.tags.includes(activeFilter);
     const q = search.toLowerCase().trim();
     const textMatch = !q || p.title.toLowerCase().includes(q) || p.tags.join(" ").toLowerCase().includes(q);
     return tagMatch && textMatch;
-  });
+  }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-  if (loading) return <div className="empty">Loading...</div>;
-  if (error) return <div className="empty">Something went wrong.</div>;
+  if (loading) return <div className="pl-root"><div className="empty">Loading...</div></div>;
+  if (error) return <div className="pl-root"><div className="empty">Something went wrong.</div></div>;
 
   return (
     <div className="pl-root">
@@ -78,7 +130,7 @@ export default function ProjectsList() {
         </div>
       </div>
 
-      {/* FAB */}
+      {/* 🚨 FAB 버튼: 친구의 App.jsx 라우터에 맞춰 "/new" 로 정확히 수정! */}
       <button className="fab" onClick={() => navigate("/new")}>
         <svg viewBox="0 0 24 24">
           <line x1="12" y1="5" x2="12" y2="19"/>

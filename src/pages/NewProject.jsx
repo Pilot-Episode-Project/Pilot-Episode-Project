@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // 🚨 페이지 이동을 위해 추가
 import { supabase } from "../supabaseClient";
 import { style } from "../components/NewProjectComponents/styles";
 import SectionBasics from "../components/NewProjectComponents/SectionBasics";
@@ -8,6 +9,8 @@ import SectionTechStack from "../components/NewProjectComponents/SectionTechStac
 const STEPS = ["Basics", "Tags", "Tech Stack"];
 
 export default function NewProject() {
+  const navigate = useNavigate(); // 🚨 네비게이트 함수 초기화
+
   const [title, setTitle]               = useState("");
   const [desc, setDesc]                 = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
@@ -23,25 +26,47 @@ export default function NewProject() {
   ];
 
   const handleSubmit = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    // 1. 필수 입력값 체크
+    if (!title || !desc) {
+      alert("제목과 설명을 모두 입력해주세요!");
+      return;
+    }
 
-    const { error } = await supabase.from("projects").insert({
-      title,
-      description: desc,
-      tags: [...selectedTags, ...customTags],
-      images: previews,
-      stack: selectedTech.map(id => ({ name: id })),
-      contributors: user ? [{ initials: user.email.slice(0, 2).toUpperCase(), color: "#E14141" }] : [],
-      lead: user?.email ?? "",
-    });
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      alert("로그인이 필요합니다!");
+      navigate('/login');
+      return;
+    }
+
+    // 🚨 2. 영교님의 DB 스키마에 맞게 데이터 변환 (Mapping)
+    const combinedTags = [...selectedTags, ...customTags];
+    const categoryTag = combinedTags.length > 0 ? combinedTags[0] : "General"; // 태그는 첫 번째 것을 대표로 사용
+    const techStacksString = selectedTech.join(", "); // 기술 스택을 "React, Node.js" 형태의 문자열로 변환
+
+    const { data, error } = await supabase.from("projects").insert([{
+      title: title,
+      content: desc,                    // description -> content로 매핑
+      category_tag: categoryTag,        // tags 배열 -> 단일 문자열로 매핑
+      tech_stacks: techStacksString,    // JSON -> 콤마로 구분된 문자열로 매핑
+      images: previews,                 // 새로 추가했던 이미지 배열
+      author_id: user.id                // lead -> author_id 로 완벽 연결
+    }]).select(); // 🚨 생성된 프로젝트 정보를 받아오기 위해 추가
 
     if (error) {
-      console.error("Failed to save project:", error);
+      console.error("DB 저장 실패:", error);
+      alert("글 작성 중 오류가 발생했습니다: " + error.message);
       return;
     }
 
     setToast(true);
-    setTimeout(() => setToast(false), 2800);
+    
+    // 3. 성공 알림 후 1.5초 뒤에 메인 화면으로 자동 이동!
+    setTimeout(() => {
+      setToast(false);
+      navigate('/');
+    }, 1500);
   };
 
   return (
@@ -54,7 +79,8 @@ export default function NewProject() {
             <p>Fill in the details to publish your project for collaborators.</p>
           </div>
           <div className="np-topbar-actions">
-            <button className="btn-ghost">Discard</button>
+            {/* 🚨 Discard 버튼에 메인으로 돌아가는 기능 추가 */}
+            <button className="btn-ghost" onClick={() => navigate('/')}>Discard</button>
             <button className="btn-primary" onClick={handleSubmit}>
               <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
               Publish Project

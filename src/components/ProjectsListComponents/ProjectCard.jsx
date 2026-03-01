@@ -50,13 +50,12 @@ export default function ProjectCard({ project, animDelay }) {
 
   return (
     <Link
-      to={`/project/${project.id}`}
+      to={`/project/${project.id}`} // 🚨 /post 가 아니라 App.jsx에 있는 /project 로 수정!
       className="p-card"
       style={{ animationDelay: `${animDelay}s` }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Left panel */}
       <div className="card-left">
         <div className="card-img">
           <div className="card-img-placeholder">
@@ -81,7 +80,6 @@ export default function ProjectCard({ project, animDelay }) {
         </div>
       </div>
 
-      {/* Right content */}
       <div className="card-content">
         <div className="card-top">
           <p className="card-title">{project.title}</p>
