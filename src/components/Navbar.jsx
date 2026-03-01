@@ -11,9 +11,9 @@ export default function Navbar() {
       <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
         <div className="flex lg:flex-1">
           <Link to="/" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
+            <span className="sr-only">Wisc Project Share</span>
             <img
-              alt=""
+              alt="Logo"
               src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
               className="h-8 w-auto"
             />
@@ -29,6 +29,8 @@ export default function Navbar() {
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
+        
+        {/* 검색창 유지 */}
         <div className="hidden lg:flex flex-1 justify-center px-4">
           <div className="relative w-full max-w-lg">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -41,20 +43,20 @@ export default function Navbar() {
             />
           </div>
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link to="/login" className="text-sm/6 font-semibold text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </Link>
-        </div>
+        
+        {/* 기존에 있던 Log in 링크 삭제 영역 (빈 공간으로 두어 검색창 중앙 정렬 유지) */}
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
       </nav>
+
+      {/* 모바일 메뉴 */}
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
             <Link to="/" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
+              <span className="sr-only">Wisc Project Share</span>
               <img
-                alt=""
+                alt="Logo"
                 src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
                 className="h-8 w-auto"
               />
@@ -68,18 +70,7 @@ export default function Navbar() {
               <XMarkIcon aria-hidden="true" className="size-6" />
             </button>
           </div>
-          <div className="mt-6 flow-root">
-            <div className="-my-6 divide-y divide-gray-500/10">
-              <div className="py-6">
-                <Link
-                  to="/login"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </Link>
-              </div>
-            </div>
-          </div>
+          {/* 모바일 메뉴 안에서도 Log in 버튼 삭제 */}
         </DialogPanel>
       </Dialog>
     </header>
