@@ -1,13 +1,13 @@
-🚀 Pilot Episode
+# 🚀 Pilot Episode
 
 A Team-Building & Project Matching Platform for CS Students
 
-📌 Overview
+# 📌 Overview
 
 Pilot Episode is a web-based community platform that helps students turn ideas into teams.
 Instead of a simple “post and pray” bulletin board, it supports granular interest tags, tech-stack-based discovery, and a role-based application system (Frontend, Backend, ML, etc.) to make forming project teams fast and structured—perfect for hackathons and class projects.
 
-✨ Core Features
+# ✨ Core Features
 1) 🔍 Advanced Filtering & Search
 
 Interest Categories: Browse projects by specialized categories such as:
@@ -50,7 +50,7 @@ Applications you’ve submitted
 
 Status updates in one place
 
-🧱 Tech Stack
+# 🧱 Tech Stack
 Frontend
 
 React (Vite)
@@ -67,7 +67,7 @@ Supabase Auth
 
 Supabase Storage (avatars + project images)
 
-🗄 Database Architecture
+# 🗄 Database Architecture
 
 Pilot Episode uses a normalized PostgreSQL structure with 4 core tables:
 
@@ -99,7 +99,7 @@ Maps users → roles
 
 Tracks application status + history
 
-📦 Getting Started
+# 📦 Getting Started
 1) Clone the repository
 git clone https://github.com/payjuper/cheesehacks.git
 cd cheesehacks/Cheesehacks-projectSpecifics
@@ -113,14 +113,14 @@ VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 4) Run the development server
 npm run dev
-🧪 Scripts
+# 🧪 Scripts
 
 Common commands (Vite defaults):
 
 npm run dev       # Start dev server
 npm run build     # Build for production
 npm run preview   # Preview production build locally
-👨‍💻 Authors
+# 👨‍💻 Authors
 
 Seunghoon Lee (Junior, Computer Science @ UW–Madison) — GitHub: @twoSquaredHoon
 
