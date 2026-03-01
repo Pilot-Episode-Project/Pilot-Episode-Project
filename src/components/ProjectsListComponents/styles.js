@@ -51,6 +51,7 @@ export const style = `
     display: flex; flex-direction: row; align-items: stretch; overflow: hidden;
     transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
     animation: rise 0.45s cubic-bezier(0.22,1,0.36,1) both; cursor: pointer;
+    width: 641px; height: 405px; flex-shrink: 0;
   }
   .p-card:hover { box-shadow: 0 6px 32px rgba(0,0,0,0.09); border-color: #d8d4ce; transform: translateY(-2px); }
   .p-card:hover .card-title { color: var(--red); }

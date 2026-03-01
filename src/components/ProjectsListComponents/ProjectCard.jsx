@@ -50,12 +50,16 @@ export default function ProjectCard({ project, animDelay }) {
 
   return (
     <Link
-      to={`/project/${project.id}`} // 🚨 /post 가 아니라 App.jsx에 있는 /project 로 수정!
-      className="p-card"
-      style={{ animationDelay: `${animDelay}s` }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+  to={`/project/${project.id}`}
+  className="p-card"
+  style={{ 
+    animationDelay: `${animDelay}s`,
+    width: '50vw',
+    height: '15vw',
+  }}
+  onMouseEnter={handleMouseEnter}
+  onMouseLeave={handleMouseLeave}
+>
       <div className="card-left">
         <div className="card-img">
           <div className="card-img-placeholder">
@@ -79,8 +83,9 @@ export default function ProjectCard({ project, animDelay }) {
           ))}
         </div>
       </div>
+<div className="card-content">
 
-      <div className="card-content">
+        {/* Floor 1 — Title & Description */}
         <div className="card-top">
           <p className="card-title">{project.title}</p>
           <button className={`wl-btn${saved ? " saved" : ""}`} onClick={toggleSave}>
@@ -89,21 +94,21 @@ export default function ProjectCard({ project, animDelay }) {
             </svg>
           </button>
         </div>
-
-        <div className="card-body">
-          <div className="stack-row">
-            {stack.map(s => (
-              <div key={s.name} className="stack-item">
-                {s.icon && <div className="sicon">{s.icon}</div>}
-                {s.name}
-              </div>
-            ))}
-          </div>
-          <p className="card-desc">{project.description}</p>
-        </div>
+        <p className="card-desc">{project.description}</p>
 
         <div className="card-divider" />
 
+        {/* Floor 2 — Tech Stack */}
+        <div className="stack-row">
+          {stack.map(s => (
+            <div key={s.name} className="stack-item">
+              {s.icon && <div className="sicon">{s.icon}</div>}
+              {s.name}
+            </div>
+          ))}
+        </div>
+
+        {/* Floor 3 — Contributors */}
         <div className="card-footer">
           <div className="contrib-row">
             <div className="avatar-stack">
@@ -132,7 +137,8 @@ export default function ProjectCard({ project, animDelay }) {
             </svg>
           </div>
         </div>
+
       </div>
-    </Link>
+   </Link>
   );
 }
