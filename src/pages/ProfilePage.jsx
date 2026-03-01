@@ -36,7 +36,7 @@ const style = `
 
   @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-  .pp-banner { height: 160px; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 40%, #1f1f1f 100%); position: relative; overflow: hidden; }
+.pp-banner { height: 160px; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 40%, #1f1f1f 100%); position: relative; overflow: hidden; margin-left: calc(-1 * var(--sidebar-w)); padding-left: var(--sidebar-w); }
   .pp-banner-accent { position: absolute; bottom: -40px; right: -40px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(225,65,65,0.18) 0%, transparent 70%); }
   .pp-header { padding: 0 48px; position: relative; }
   .pp-avatar-wrap { position: relative; display: inline-block; margin-top: -44px; margin-bottom: 16px; animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both; }
