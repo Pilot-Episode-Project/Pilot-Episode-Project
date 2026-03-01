@@ -8,24 +8,28 @@ export default function ProjectCard({ project, animDelay }) {
   const [saved, setSaved] = useState(false);
   const timerRef = useRef(null);
 
-  // Preload images
+  const images = project.images ?? [];
+  const stack = project.stack ?? [];
+  const contributors = project.contributors ?? [];
+  const tags = project.tags ?? [];
+
   useEffect(() => {
-    project.images.forEach(url => {
+    images.forEach(url => {
       const img = new Image();
       img.src = url;
     });
-  }, [project.images]);
+  }, [images]);
 
   const handleMouseEnter = useCallback(() => {
-    if (project.images.length < 2) return;
+    if (images.length < 2) return;
     timerRef.current = setInterval(() => {
       setImgOpacity(0);
       setTimeout(() => {
-        setImgIdx(prev => (prev + 1) % project.images.length);
+        setImgIdx(prev => (prev + 1) % images.length);
         setImgOpacity(1);
       }, 220);
     }, 1000);
-  }, [project.images]);
+  }, [images]);
 
   const handleMouseLeave = useCallback(() => {
     clearInterval(timerRef.current);
@@ -62,14 +66,16 @@ export default function ProjectCard({ project, animDelay }) {
               <polyline points="21 15 16 10 5 21"/>
             </svg>
           </div>
-          <img
-            src={project.images[imgIdx]}
-            alt={project.title}
-            style={{ opacity: imgOpacity }}
-          />
+          {images[imgIdx] && (
+            <img
+              src={images[imgIdx]}
+              alt={project.title}
+              style={{ opacity: imgOpacity }}
+            />
+          )}
         </div>
         <div className="tags">
-          {project.tags.map(tag => (
+          {tags.map(tag => (
             <span key={tag} className={`tag ${TAG_CLASS[tag] || ""}`}>{tag}</span>
           ))}
         </div>
@@ -88,14 +94,14 @@ export default function ProjectCard({ project, animDelay }) {
 
         <div className="card-body">
           <div className="stack-row">
-            {project.stack.map(s => (
+            {stack.map(s => (
               <div key={s.name} className="stack-item">
-                <div className="sicon">{s.icon}</div>
+                {s.icon && <div className="sicon">{s.icon}</div>}
                 {s.name}
               </div>
             ))}
           </div>
-          <p className="card-description">{project.description}</p>
+          <p className="card-desc">{project.description}</p>
         </div>
 
         <div className="card-divider" />
@@ -103,7 +109,7 @@ export default function ProjectCard({ project, animDelay }) {
         <div className="card-footer">
           <div className="contrib-row">
             <div className="avatar-stack">
-              {project.contributors.map((c, i) => (
+              {contributors.map((c, i) => (
                 <div
                   key={i}
                   className="avatar"
@@ -117,7 +123,9 @@ export default function ProjectCard({ project, animDelay }) {
                 </div>
               ))}
             </div>
-            <span className="contrib-label">Led by {project.lead}</span>
+            <span className="contrib-label">
+              {project.lead ? `Led by ${project.lead}` : "No lead assigned"}
+            </span>
           </div>
           <div className="go-btn">
             <svg viewBox="0 0 24 24">
